@@ -1,0 +1,10 @@
+.detail-main {
+  min-height: 100vh;
+}
+.detail-section {
+  height: 55vh;
+  background-color: lightslategrey;
+}
+.detail-section div {
+  padding: 32px;
+}
