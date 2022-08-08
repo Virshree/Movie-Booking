@@ -1,3 +1,23 @@
 .select-main {
   min-height: 90vh;
 }
+.select-theatre {
+  background-color: rgb(4, 17, 17);
+  height: 30vh;
+  color: white;
+}
+.movie-description {
+  background-color: maroon;
+  padding: 5px;
+  border-radius: 25px;
+}
+.movie-language {
+  background-color: blue;
+  padding: 5px;
+  border-radius: 25px;
+}
+.movie-status {
+  background-color: green;
+  padding: 5px;
+  border-radius: 25px;
+}
