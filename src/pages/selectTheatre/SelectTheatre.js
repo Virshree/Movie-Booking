@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getMovieDetail } from "../../api/movie";
+import { getAllTheatre } from "../../api/theatre";
 import Footer from "../../components/footer/Footer";
 import Header from "../../components/header/Header";
+import { getCurrentFilteredTheatres } from "../../utils/filteredtheatrelist";
 import "./selectTheatre.css";
 function SelectTheatre() {
-  const [selectTheatre, setSelectTheate] = useState({});
-
+  const [movieDetail, setMovieDetail] = useState({});
+  const [theatreFilteredList, setTheatreFilteredList] = useState([]);
   const param = useParams();
   const { movieName, movieId } = param;
 
   useEffect(() => {
     fetchMovies(movieId);
+    fetchTheatre();
   }, []);
   const fetchMovies = () => {
     getMovieDetail(movieId)
@@ -19,7 +22,25 @@ function SelectTheatre() {
         const { status, data } = res;
         if (status === 200) {
           console.log(data);
-          setSelectTheate(data);
+          setMovieDetail(data);
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
+
+  const fetchTheatre = () => {
+    getAllTheatre()
+      .then((res) => {
+        const { data, status } = res;
+        if (status === 200) {
+          console.log(data);
+          // call a function which will filter out theatres for current movie
+          // out of all theatres
+          const filteredList = getCurrentFilteredTheatres(data, movieId);
+          console.log(filteredList);
+          setTheatreFilteredList(filteredList);
         }
       })
       .catch((err) => {
@@ -33,7 +54,7 @@ function SelectTheatre() {
     releaseStatus = " ",
     director = "",
     releaseDate = "",
-  } = selectTheatre;
+  } = movieDetail;
 
   return (
     <div>
@@ -56,9 +77,30 @@ function SelectTheatre() {
               <i>Director By :{director}</i>
             </h4>
 
-            <span>Date:{releaseDate}</span>
+            <span>Release Date:{releaseDate}</span>
           </div>
         </div>
+        <h2 className="text-center m-2" style={{ textTransform: "uppercase" }}>
+          Select Theatre
+        </h2>
+        {theatreFilteredList.map((theatre) => {
+          const { name } = theatre;
+          return (
+            <div className="container movie">
+              <div className="row p-2 ">
+                <div className="col-md-4 ">{name}</div>
+
+                <span className="text-danger col-md-4 ">
+                  <i class="bi bi-phone-fill"></i>m-Ticket
+                </span>
+                <span className="text-success col-md-4">
+                  <i class="bi bi-cup-straw"></i>
+                  Food & Beverages
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
       <Footer />
     </div>
