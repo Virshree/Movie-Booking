@@ -50,7 +50,7 @@ function MovieDetail() {
   const buttonText =
     releaseStatus === "RELEASED" ? "Book Ticket" : "Coming Soon";
   const buttonUrl =
-    releaseStatus === "RELEASED" ? `/buytickets/${name}/${_id}` : "#";
+    releaseStatus === "RELEASED" ? `/buy-tickets/${name}/${_id}` : "#";
   return (
     <div>
       <Header hideSearch={true} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getMovieDetail } from "../../api/movie";
 import { getAllTheatre } from "../../api/theatre";
 import Footer from "../../components/footer/Footer";
@@ -84,20 +84,25 @@ function SelectTheatre() {
           Select Theatre
         </h2>
         {theatreFilteredList.map((theatre) => {
-          const { name } = theatre;
+          const { name, _id } = theatre;
           return (
             <div className="container movie">
-              <div className="row p-2 ">
-                <div className="col-md-4 ">{name}</div>
+              <Link
+                to={`/select-seats/${movieId}/${_id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <div className="row p-2 ">
+                  <div className="col-md-4 ">{name}</div>
 
-                <span className="text-danger col-md-4 ">
-                  <i class="bi bi-phone-fill"></i>m-Ticket
-                </span>
-                <span className="text-success col-md-4">
-                  <i class="bi bi-cup-straw"></i>
-                  Food & Beverages
-                </span>
-              </div>
+                  <span className="text-danger col-md-4 ">
+                    <i class="bi bi-phone-fill"></i>m-Ticket
+                  </span>
+                  <span className="text-success col-md-4">
+                    <i class="bi bi-cup-straw"></i>
+                    Food & Beverages
+                  </span>
+                </div>
+              </Link>
             </div>
           );
         })}

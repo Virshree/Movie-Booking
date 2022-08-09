@@ -11,6 +11,7 @@ import Authentication from "./pages/authentication/Authentication";
 import Admin from "./pages/admin/Admin";
 import MovieDetail from "./pages/movie-detail/MovieDetail";
 import SelectTheatre from "./pages/selectTheatre/SelectTheatre";
+import SelectSeats from "./pages/select-seats/SelectSeats";
 function App() {
   return (
     <div className="App">
@@ -22,8 +23,12 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/movie-detail/:movieId" element={<MovieDetail />} />
         <Route
-          path="/buytickets/:movieName/:movieId"
+          path="/buy-tickets/:movieName/:movieId"
           element={<SelectTheatre />}
+        />
+        <Route
+          path="/select-seats/:movieId/:theatreId"
+          element={<SelectSeats />}
         />
       </Routes>
     </div>
