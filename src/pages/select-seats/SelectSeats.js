@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getMovieDetail } from "../../api/movie";
 import { getTheatreById } from "../../api/theatre";
+import Cinema from "../../components/cinema/Cinema";
 import Footer from "../../components/footer/Footer";
 import Header from "../../components/header/Header";
+import Screen from "../../components/screen/Screen";
 import SeatGuide from "../../components/seatguide/SeatGuide";
 import "./selectseats.css";
 function SelectSeats() {
@@ -50,10 +52,16 @@ function SelectSeats() {
   return (
     <div>
       <Header hideSearch={true} />
-      <div className="seat-main vh-100 p-4">
-        <h2>{name}</h2>
-        <h3>{theatreName}</h3>
+      <div className="seat-main vh-140 p-4">
+        <h2>
+          {name}-{theatreName}
+        </h2>
         <SeatGuide />
+        <Screen />
+        <Cinema />
+        <span>You have selected </span>
+        <br />
+        <button>Payment</button>
       </div>
       <Footer />
     </div>
