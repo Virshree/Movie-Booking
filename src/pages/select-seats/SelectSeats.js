@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { useParams } from "react-router-dom";
-import { getMovieDetail } from "../../api/movie";
+import { getMovieById } from "../../api/movie";
 import { getTheatreById } from "../../api/theatre";
 import Cinema from "../../components/cinema/Cinema";
 import Footer from "../../components/footer/Footer";
@@ -20,7 +20,7 @@ function SelectSeats() {
     fetchTheatreDetails(theatreId);
   }, []);
   const fetchMoviesDetails = (movieId) => {
-    getMovieDetail(movieId)
+    getMovieById(movieId)
       .then((res) => {
         const { status, data } = res;
         if (status === 200) {

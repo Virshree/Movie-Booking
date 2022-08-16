@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getMovieDetail } from "../../api/movie";
+import { getMovieById } from "../../api/movie";
 import Footer from "../../components/footer/Footer";
 import Header from "../../components/header/Header";
 import ReactPlayer from "react-player";
@@ -22,7 +22,7 @@ function MovieDetail() {
     // const { data } = await getMovieDetail(movieId);
     // console.log(data);
 
-    getMovieDetail(movieId)
+    getMovieById(movieId)
       .then((res) => {
         const { status, data } = res;
         if (status === 200) {

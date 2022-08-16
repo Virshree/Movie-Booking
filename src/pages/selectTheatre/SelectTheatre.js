@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { getMovieDetail } from "../../api/movie";
+import { getMovieById } from "../../api/movie";
 import { getAllTheatre } from "../../api/theatre";
 import Footer from "../../components/footer/Footer";
 import Header from "../../components/header/Header";
@@ -17,7 +17,7 @@ function SelectTheatre() {
     fetchTheatre();
   }, []);
   const fetchMovies = () => {
-    getMovieDetail(movieId)
+    getMovieById(movieId)
       .then((res) => {
         const { status, data } = res;
         if (status === 200) {

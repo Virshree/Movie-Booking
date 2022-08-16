@@ -2,7 +2,7 @@ import MaterialTable from "@material-table/core";
 import React from "react";
 import { useState, useEffect } from "react";
 import { Modal, ModalTitle } from "react-bootstrap";
-import { getAllMovies, updateMovie } from "../../api/movie";
+import { getAllMovies, updateMovieDetails } from "../../api/movie";
 
 function MovieList() {
   const [movieList, setMovieList] = useState([]);
@@ -47,7 +47,7 @@ function MovieList() {
     setSelectedMovie(id);
 
     try {
-      updateMovie(selectedMovie._id, selectedMovie).then((res) => {
+      updateMovieDetails(selectedMovie._id, selectedMovie).then((res) => {
         const { status, message, data } = res;
         if (status === 200) {
           console.log(data);

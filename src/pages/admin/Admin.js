@@ -12,9 +12,17 @@ import {
   getTheatreById,
   updateTheatreDetails,
 } from "../../api/theatre";
-import { getAllMovies } from "../../api/movie";
+import {
+  addNewMovies,
+  getAllMovies,
+  getMovieById,
+  removeMovies,
+  updateMovieDetails,
+} from "../../api/movie";
 import { Button, Modal } from "react-bootstrap";
 import { cities } from "../../utils/Cities";
+import { getBookings } from "../../api/booking";
+import { getAllUsers } from "../../api/user";
 
 function Admin() {
   const [showUserTable, setShowUserTable] = useState(false);
@@ -28,11 +36,18 @@ function Admin() {
   const [addTheaterModal, setAddTheatreModal] = useState(false);
   const [errorMessage, seterrorMessage] = useState("");
 
+  const [movieList, setMovieList] = useState([]);
+  const [tempMovieDetail, setTempMovieDetail] = useState({});
+  const [updateMovieModal, setUpdateMovieModal] = useState(false);
+  const [addMovieModal, setAddMovieModal] = useState(false);
+
+  const [bookinglist, setBookingList] = useState([]);
+  const [userList, setUserList] = useState([]);
   const [counterInfo, setCounterInfo] = useState({});
 
   const refreshTheatres = async () => {
     const result = await getAllTheatre();
-    console.log(result);
+    // console.log(result);
     setTheatreList(result.data);
     counterInfo.theatre = result.data.length;
     //console.log(counterInfo);
@@ -40,14 +55,18 @@ function Admin() {
   };
   const refereshMovies = async () => {
     const result = await getAllMovies();
-    //console.log(result);
+    console.log(result);
+    setMovieList(result.data);
     counterInfo.movies = result.data.length;
     //console.log(counterInfo);
+
     setCounterInfo(counterInfo);
   };
   useEffect(() => {
     refreshTheatres();
     refereshMovies();
+    refreshhBooking();
+    refreshUsers();
   }, []);
 
   const editTheatre = async (theatreId) => {
@@ -67,6 +86,9 @@ function Admin() {
   const clearState = () => {
     setAddTheatreModal(false);
     setUpdateTheatreModal(false);
+    setAddMovieModal(false);
+    setUpdateMovieModal(false);
+    setTempMovieDetail({});
     setTempTheatreDetail({});
   };
   const updateTheatre = async (e) => {
@@ -105,6 +127,75 @@ function Admin() {
     } else {
       seterrorMessage(response.data.message);
     }
+  };
+  /**Movies logic start*/
+  const editMovies = async (movieId) => {
+    const result = await getMovieById(movieId._id);
+    console.log(result);
+    setUpdateMovieModal(true);
+    setTempMovieDetail(result.data);
+  };
+
+  const deleteMovies = async (movie) => {
+    const result = await removeMovies(movie);
+    console.log(result);
+  };
+
+  const updateMovies = async (e) => {
+    e.preventDefault();
+    await updateMovieDetails(tempMovieDetail);
+    refereshMovies();
+    clearState();
+  };
+  const addMovies = () => {
+    setAddMovieModal(true);
+  };
+  const newMovies = async (e) => {
+    e.preventDefault();
+    if (tempMovieDetail.releaseStatus === "undefined")
+      tempMovieDetail.releaseStatus = "RELEASED";
+
+    await addNewMovies(tempMovieDetail);
+
+    refereshMovies();
+    clearState();
+  };
+
+  const updateTempMovieDetails = (e) => {
+    if (e.target.id === "name") {
+      tempMovieDetail.name = e.target.value;
+    } else if (e.target.id === "director") {
+      tempMovieDetail.director = e.target.value;
+    } else if (e.target.id === "releaseDate") {
+      tempMovieDetail.releaseDate = e.target.value;
+    } else if (e.target.id === "releaseStatus") {
+      tempMovieDetail.releaseStatus = e.target.value;
+    } else if (e.target.id === "posterUrl") {
+      tempMovieDetail.posterUrl = e.target.value;
+    }
+    setTempMovieDetail(Object.assign({}, tempMovieDetail));
+    seterrorMessage("");
+  };
+
+  /**Booking Records logic start */
+  const refreshhBooking = async () => {
+    const result = await getBookings();
+    console.log(result);
+    setBookingList(result.data);
+    counterInfo.bookings = result.data.length;
+    console.log(counterInfo);
+    setCounterInfo(counterInfo);
+  };
+
+  /**User Records logic start */
+
+  const refreshUsers = async () => {
+    const result = await getAllUsers();
+    //console.log(result);
+    setUserList(result.data);
+    counterInfo.user = result.data.length;
+    console.log(counterInfo);
+    setCounterInfo(counterInfo);
   };
   return (
     <div>
@@ -151,20 +242,26 @@ function Admin() {
             <CWidgetStatsC
               className="mb-3"
               icon={<i className="bi bi-card-list" />}
-              progress={{ color: "success", value: 75 }}
+              color={showBookingTable ? "success" : "dark"}
+              inverse
+              progress={{ value: counterInfo.bookings }}
               text="Number of Bookings"
               title="Bookings"
-              value="89.9%"
+              value={counterInfo.bookings}
+              onClick={() => setShowBookingTable(!showBookingTable)}
             />
           </div>
           <div className="col">
             <CWidgetStatsC
               className="mb-3"
               icon={<i className="bi bi-people" />}
-              progress={{ color: "success", value: 75 }}
+              color={showUserTable ? "success" : "dark"}
+              inverse
+              progress={{ value: counterInfo.user }}
               text="Number of users"
               title="Users"
-              value="89.9%"
+              value={counterInfo.user}
+              onClick={() => setShowUserTable(!showUserTable)}
             />
           </div>
         </div>
@@ -313,13 +410,177 @@ function Admin() {
               </Button>
             </Modal.Footer>
           </form>
+          <div className="text-center text-danger">{errorMessage}</div>
         </Modal.Body>
       </Modal>
 
       {showMovieTable ? (
         <>
-          <MaterialTable title="Movies List" />
+          <MaterialTable
+            title="Movies List"
+            style={{ margin: "60px" }}
+            data={movieList}
+            columns={[
+              {
+                title: "Poster Image",
+                field: "img",
+                render: (item) => (
+                  <img
+                    src={item.posterUrl}
+                    alt="movie_poster"
+                    width="90px"
+                    height="90px"
+                  />
+                ),
+              },
+
+              {
+                title: "Name",
+                field: "name",
+              },
+
+              {
+                title: "Director",
+                field: "director",
+              },
+
+              { title: "ReleaseDate", field: "releaseDate" },
+              {
+                title: "ReleaseStatus",
+                field: "releaseStatus",
+              },
+            ]}
+            options={{
+              headerStyle: {
+                backgroundColor: "black",
+                color: "white",
+              },
+              sorting: true,
+              filtering: true,
+              actionsColumnIndex: -1,
+            }}
+            actions={[
+              {
+                icon: "edit",
+                tooltip: "Edit Movies",
+                onClick: (event, rowData) => editMovies(rowData),
+              },
+              {
+                icon: "delete",
+                tooltip: "Delete Movies",
+                onClick: (event, rowData) => deleteMovies(rowData),
+              },
+            ]}
+          />
+          <div className="text-center">
+            <Button className="btn btn-info" onClick={addMovies}>
+              Add Movies
+            </Button>
+          </div>
         </>
+      ) : (
+        <></>
+      )}
+
+      <Modal
+        show={updateMovieModal || addMovieModal}
+        onHide={clearState}
+        backdrop="static"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {updateMovieModal ? "Edit Movies" : "Add Movies"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={updateMovieModal ? updateMovies : newMovies}>
+            <div className="input-group mb-3">
+              <span className="input-group-text">
+                <i className="bi bi-pencil"> </i>
+              </span>
+              <input
+                type="text"
+                placeholder="Enter Movie Name"
+                className="form-control"
+                id="name"
+                onChange={updateTempMovieDetails}
+                value={tempMovieDetail.name}
+              />
+            </div>
+            <div className="input-group mb-3">
+              <span className="input-group-text">
+                <i className="bi bi-pencil"> </i>
+              </span>
+              <input
+                type="text"
+                placeholder="Enter Movie Director"
+                className="form-control"
+                id="director"
+                onChange={updateTempMovieDetails}
+                value={tempMovieDetail.director}
+              />
+            </div>
+            <div className="input-group mb-3">
+              <span className="input-group-text">
+                <i className="bi bi-pencil"> </i>
+              </span>
+              <input
+                type="text"
+                placeholder="Enter Movie Poster Url"
+                className="form-control"
+                id="posterUrl"
+                onChange={updateTempMovieDetails}
+                value={tempMovieDetail.posterUrl}
+              />
+            </div>
+            <div className="input-group mb-3">
+              <span className="input-group-text">
+                <i className="bi bi-pencil"> </i>
+              </span>
+              <input
+                type="text"
+                placeholder="Enter ReleaseDates"
+                className="form-control"
+                id="releaseDate"
+                onChange={updateTempMovieDetails}
+                value={tempMovieDetail.releaseDate}
+              />
+            </div>
+            <select
+              className="form-select"
+              id="releaseStatus"
+              onChange={updateTempMovieDetails}
+              value={tempMovieDetail.releaseStatus}
+            >
+              <option>Select Status</option>
+              <option value="Released" key="RELEASED">
+                RELEASED
+              </option>
+              <option value="UnReleased">UNRELEASED</option>
+              <option value="Blocked">BLOCKED</option>
+            </select>
+
+            <Modal.Footer>
+              <Button className="btn btn-info m-2" type="submit">
+                {updateMovieModal ? "Edit Movies" : "Add Movies"}
+              </Button>
+              <Button className="btn btn-secondary m-2" onClick={clearState}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal.Body>
+      </Modal>
+
+      {showBookingTable ? (
+        <MaterialTable title="Booking Records" style={{ margin: "60px" }} />
+      ) : (
+        <></>
+      )}
+
+      {showUserTable ? (
+        <MaterialTable title="User Records" style={{ margin: "60px" }} />
       ) : (
         <></>
       )}
