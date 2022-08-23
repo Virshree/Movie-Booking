@@ -24,12 +24,12 @@ function Authentication() {
 
   //redirect logic based on userTypes
   function redirectToPage(userType) {
-    if (userType === ROLES.CUSTOMER) {
-      navigate("/customer");
+    if (userType === ROLES.ADMIN) {
+      navigate("/admin");
     } else if (userType === ROLES.CLIENT) {
       navigate("/client");
     } else {
-      navigate("/admin");
+      navigate("/");
     }
   }
 

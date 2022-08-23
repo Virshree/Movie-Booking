@@ -41,7 +41,7 @@ function Home() {
   //search movie logic
   const filterMovieText = (searchText) => {
     const filteredMovie = movieall.filter((movie) => {
-      return movies.name.toLowerCase().includes(searchText);
+      return movie.name.toLowerCase().includes(searchText);
     });
     setMovies(filteredMovie); //return array
   };

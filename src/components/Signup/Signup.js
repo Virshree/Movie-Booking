@@ -8,7 +8,7 @@ function Signup(props) {
   const [password, setPassword] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setemail] = useState("");
-  const [userType, setUserTypes] = useState(ROLES.CUSTOMER);
+  const [userType, setUserTypes] = useState(ROLES.CLIENT);
 
   function handleSubmit(e) {
     const data = { userId, password, name: userName, email, userType };
@@ -62,7 +62,7 @@ function Signup(props) {
               />
             </div>
             <div className="input-group m-2 ">
-              <span className="text-muted">User Type</span>
+              <span className="m-2 ">User Type</span>
 
               <DropdownButton
                 align="end"

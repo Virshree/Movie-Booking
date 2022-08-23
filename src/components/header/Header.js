@@ -15,7 +15,7 @@ function Header(props) {
     navigate("/login");
   }
   function handleSearch(e) {
-    // console.log(searchText);
+    console.log(searchText);
 
     filterMovieText(searchText);
     e.preventDefault();

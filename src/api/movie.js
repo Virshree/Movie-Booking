@@ -1,4 +1,3 @@
-import axios from "axios";
 import { AxiosInstance } from "../utils/AxiosInstance";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -11,7 +10,7 @@ export const getAllMovies = async () => {
     const response = await AxiosInstance.get(getUrl);
     return response;
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return error.response;
   }
 };
@@ -28,18 +27,10 @@ export const getMovieById = async (movieId) => {
   }
 };
 
-// export const updateMovieDetails = async (movieId) => {
-//   const url = `${BASE_URL}/mba/api/v1/movies/${movieId}`;
-//   return await axios.put(url, {
-//     headers: {
-//       "x-access-token": localStorage.getItem("accessToken"),
-//     },
-//   });
-// };
-export const updateMovieDetails = async (movie) => {
-  const putURL = `/mba/api/v1/movies/${movie._id}`;
+export const updateMovieDetails = async (movies) => {
+  const URL = `/mba/api/v1/movies/${movies._id}`;
   try {
-    const response = await AxiosInstance.put(putURL, movie);
+    const response = await AxiosInstance.put(URL, movies);
     console.log(response);
     return response;
   } catch (error) {
@@ -55,7 +46,7 @@ export const addNewMovies = async (movie) => {
     console.log(response);
     return response;
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return error.response;
   }
 };
@@ -63,7 +54,7 @@ export const removeMovies = async (movie) => {
   const delURL = `/mba/api/v1/movies/${movie._id}`;
   try {
     const response = await AxiosInstance.delete(delURL);
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     console.log(error);

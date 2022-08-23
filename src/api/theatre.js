@@ -8,7 +8,7 @@ export const getAllTheatre = async () => {
 
   try {
     const response = await AxiosInstance.get(getUrl);
-    console.log(response);
+    //console.log(response);
     return response;
   } catch (error) {
     console.log(error);

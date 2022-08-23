@@ -23,6 +23,7 @@ import { Button, Modal } from "react-bootstrap";
 import { cities } from "../../utils/Cities";
 import { getBookings } from "../../api/booking";
 import { getAllUsers } from "../../api/user";
+import { ExportCsv, ExportPdf } from "@material-table/exporters";
 
 function Admin() {
   const [showUserTable, setShowUserTable] = useState(false);
@@ -45,6 +46,7 @@ function Admin() {
   const [userList, setUserList] = useState([]);
   const [counterInfo, setCounterInfo] = useState({});
 
+  /**Theatre records logic start */
   const refreshTheatres = async () => {
     const result = await getAllTheatre();
     // console.log(result);
@@ -53,21 +55,6 @@ function Admin() {
     //console.log(counterInfo);
     setCounterInfo(counterInfo);
   };
-  const refereshMovies = async () => {
-    const result = await getAllMovies();
-    console.log(result);
-    setMovieList(result.data);
-    counterInfo.movies = result.data.length;
-    //console.log(counterInfo);
-
-    setCounterInfo(counterInfo);
-  };
-  useEffect(() => {
-    refreshTheatres();
-    refereshMovies();
-    refreshhBooking();
-    refreshUsers();
-  }, []);
 
   const editTheatre = async (theatreId) => {
     const result = await getTheatreById(theatreId._id);
@@ -129,6 +116,15 @@ function Admin() {
     }
   };
   /**Movies logic start*/
+  const refereshMovies = async () => {
+    const result = await getAllMovies();
+    //console.log(result);
+    setMovieList(result.data);
+    counterInfo.movies = result.data.length;
+    console.log(counterInfo);
+
+    setCounterInfo(counterInfo);
+  };
   const editMovies = async (movieId) => {
     const result = await getMovieById(movieId._id);
     console.log(result);
@@ -137,13 +133,14 @@ function Admin() {
   };
 
   const deleteMovies = async (movie) => {
-    const result = await removeMovies(movie);
-    console.log(result);
+    await removeMovies(movie);
+    refereshMovies();
   };
 
   const updateMovies = async (e) => {
     e.preventDefault();
     await updateMovieDetails(tempMovieDetail);
+
     refereshMovies();
     clearState();
   };
@@ -166,26 +163,30 @@ function Admin() {
       tempMovieDetail.name = e.target.value;
     } else if (e.target.id === "director") {
       tempMovieDetail.director = e.target.value;
+    } else if (e.target.id === "description") {
+      tempMovieDetail.description = e.target.value;
     } else if (e.target.id === "releaseDate") {
       tempMovieDetail.releaseDate = e.target.value;
     } else if (e.target.id === "releaseStatus") {
       tempMovieDetail.releaseStatus = e.target.value;
     } else if (e.target.id === "posterUrl") {
       tempMovieDetail.posterUrl = e.target.value;
+    } else if (e.target.id === "trailerUrl") {
+      tempMovieDetail.trailerUrl = e.target.value;
     }
     setTempMovieDetail(Object.assign({}, tempMovieDetail));
     seterrorMessage("");
   };
 
   /**Booking Records logic start */
-  const refreshhBooking = async () => {
-    const result = await getBookings();
-    console.log(result);
-    setBookingList(result.data);
-    counterInfo.bookings = result.data.length;
-    console.log(counterInfo);
-    setCounterInfo(counterInfo);
-  };
+  // const refreshhBooking = async () => {
+  //   const result = await getBookings();
+  //   console.log(result);
+  //   //setBookingList(result.data);
+  //   counterInfo.bookings = result.data.length;
+  //   //console.log(counterInfo);
+  //   setCounterInfo(counterInfo);
+  // };
 
   /**User Records logic start */
 
@@ -194,9 +195,15 @@ function Admin() {
     //console.log(result);
     setUserList(result.data);
     counterInfo.user = result.data.length;
-    console.log(counterInfo);
+    //console.log(counterInfo);
     setCounterInfo(counterInfo);
   };
+  useEffect(() => {
+    refreshTheatres();
+    refereshMovies();
+    // refreshhBooking();
+    refreshUsers();
+  }, []);
   return (
     <div>
       <Header hideSearch={true} />
@@ -303,6 +310,18 @@ function Admin() {
                 backgroundColor: "black",
                 color: "white",
               },
+              exportMenu: [
+                {
+                  label: "Export PDF",
+                  exportFunc: (cols, datas) =>
+                    ExportPdf(cols, datas, "TheatreRecords"),
+                },
+                {
+                  label: "Export CSV",
+                  exportFunc: (cols, datas) =>
+                    ExportCsv(cols, datas, "theatreRecords"),
+                },
+              ],
             }}
             actions={[
               {
@@ -458,6 +477,18 @@ function Admin() {
               sorting: true,
               filtering: true,
               actionsColumnIndex: -1,
+              exportMenu: [
+                {
+                  label: "Export PDF",
+                  exportFunc: (cols, datas) =>
+                    ExportPdf(cols, datas, "MovieRecords"),
+                },
+                {
+                  label: "Export CSV",
+                  exportFunc: (cols, datas) =>
+                    ExportCsv(cols, datas, "movieRecords"),
+                },
+              ],
             }}
             actions={[
               {
@@ -506,6 +537,21 @@ function Admin() {
                 id="name"
                 onChange={updateTempMovieDetails}
                 value={tempMovieDetail.name}
+                required
+              />
+            </div>
+            <div className="input-group mb-3">
+              <span className="input-group-text">
+                <i className="bi bi-pencil"> </i>
+              </span>
+              <input
+                type="text"
+                placeholder="Enter Movie Description"
+                className="form-control"
+                id="description"
+                onChange={updateTempMovieDetails}
+                value={tempMovieDetail.description}
+                required
               />
             </div>
             <div className="input-group mb-3">
@@ -519,6 +565,7 @@ function Admin() {
                 id="director"
                 onChange={updateTempMovieDetails}
                 value={tempMovieDetail.director}
+                required
               />
             </div>
             <div className="input-group mb-3">
@@ -532,6 +579,21 @@ function Admin() {
                 id="posterUrl"
                 onChange={updateTempMovieDetails}
                 value={tempMovieDetail.posterUrl}
+                required
+              />
+            </div>
+            <div className="input-group mb-3">
+              <span className="input-group-text">
+                <i className="bi bi-pencil"> </i>
+              </span>
+              <input
+                type="text"
+                placeholder="Enter Trailer Url"
+                className="form-control"
+                id="trailerUrl"
+                onChange={updateTempMovieDetails}
+                value={tempMovieDetail.trailerUrl}
+                required
               />
             </div>
             <div className="input-group mb-3">
@@ -545,20 +607,20 @@ function Admin() {
                 id="releaseDate"
                 onChange={updateTempMovieDetails}
                 value={tempMovieDetail.releaseDate}
+                required
               />
             </div>
             <select
               className="form-select"
               id="releaseStatus"
               onChange={updateTempMovieDetails}
+              required
               value={tempMovieDetail.releaseStatus}
             >
               <option>Select Status</option>
-              <option value="Released" key="RELEASED">
-                RELEASED
-              </option>
-              <option value="UnReleased">UNRELEASED</option>
-              <option value="Blocked">BLOCKED</option>
+              <option value="RELEASED">RELEASED</option>
+              <option value="UNRELEASED">UNRELEASED</option>
+              <option value="BLOCKED">BLOCKED</option>
             </select>
 
             <Modal.Footer>
@@ -570,17 +632,110 @@ function Admin() {
               </Button>
             </Modal.Footer>
           </form>
+          <div className="text-center text-danger">{errorMessage}</div>
         </Modal.Body>
       </Modal>
 
       {showBookingTable ? (
-        <MaterialTable title="Booking Records" style={{ margin: "60px" }} />
+        <MaterialTable
+          title="Booking Records"
+          style={{ margin: "60px" }}
+          data={bookinglist}
+          columns={[
+            {
+              title: "UserId",
+              field: "userId",
+            },
+            {
+              title: "Created At",
+              field: "createdAt",
+            },
+            {
+              title: "No. of Seats",
+              field: "noOfSeats",
+            },
+            {
+              title: "Timing",
+              field: "timing",
+            },
+            {
+              title: "TotalCost",
+              field: "totalCost",
+            },
+            {
+              title: "Status",
+              field: "status",
+            },
+          ]}
+          options={{
+            headerStyle: {
+              backgroundColor: "black",
+              color: "white",
+            },
+            exportMenu: [
+              {
+                label: "Export PDF",
+                exportFunc: (cols, datas) =>
+                  ExportPdf(cols, datas, "BookingRecords"),
+              },
+              {
+                label: "Export CSV",
+                exportFunc: (cols, datas) =>
+                  ExportCsv(cols, datas, "bookingRecords"),
+              },
+            ],
+          }}
+        />
       ) : (
         <></>
       )}
 
       {showUserTable ? (
-        <MaterialTable title="User Records" style={{ margin: "60px" }} />
+        <MaterialTable
+          title="User Records"
+          style={{ margin: "60px" }}
+          data={userList}
+          columns={[
+            {
+              title: "UserId",
+              field: "userId",
+            },
+            {
+              title: "Name",
+              field: "name",
+            },
+            {
+              title: "Email",
+              field: "email",
+            },
+            {
+              title: "UserTypes",
+              field: "userType",
+            },
+            {
+              title: "UserStatus",
+              field: "userStatus",
+            },
+          ]}
+          options={{
+            headerStyle: {
+              backgroundColor: "black",
+              color: "white",
+            },
+            exportMenu: [
+              {
+                label: "Export PDF",
+                exportFunc: (cols, datas) =>
+                  ExportPdf(cols, datas, "UserRecords"),
+              },
+              {
+                label: "Export CSV",
+                exportFunc: (cols, datas) =>
+                  ExportCsv(cols, datas, "userRecords"),
+              },
+            ],
+          }}
+        />
       ) : (
         <></>
       )}
