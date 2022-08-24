@@ -36,7 +36,8 @@ function SelectTheatre() {
         const { data, status } = res;
         if (status === 200) {
           console.log(data);
-          // call a function which will filter out theatres for current movie
+          // call a function which will filter out
+          //theatres for current movie
           // out of all theatres
           const filteredList = getCurrentFilteredTheatres(data, movieId);
           console.log(filteredList);

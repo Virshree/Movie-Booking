@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { DEFAULT_BREAKPOINTS } from "react-bootstrap/esm/ThemeProvider";
 
 import { useParams } from "react-router-dom";
-import {
-  createNewBookings,
-  getBookings,
-  makePaymentForBookings,
-} from "../../api/booking";
+import { createNewBookings } from "../../api/booking";
 import { getMovieById } from "../../api/movie";
+import { makePaymentForBookings } from "../../api/payment";
 import { getTheatreById } from "../../api/theatre";
 import Cinema from "../../components/cinema/Cinema";
 import Footer from "../../components/footer/Footer";
@@ -14,14 +12,14 @@ import Header from "../../components/header/Header";
 import Payment from "../../components/payment/Payment";
 import Screen from "../../components/screen/Screen";
 import SeatGuide from "../../components/seatguide/SeatGuide";
-import { TICKET_PRICE } from "../../constants/seating";
+import { DEFAULT_OCCUPIED_SEATS, TICKET_PRICE } from "../../constants/seating";
 import "./selectseats.css";
 function SelectSeats() {
   const [movieDetail, setMovieDetail] = useState({});
   const [theatreDetail, setTheatreDetail] = useState({});
 
   const [selectSeats, setSelectSeats] = useState([]);
-
+  const [occupiedSeats, setOccupiedSeats] = useState(DEFAULT_OCCUPIED_SEATS);
   const [confirmationModal, setconfirmationModal] = useState(false);
   const [bookingDetail, setBookingDetail] = useState({});
   const [paymentDetail, setPaymentDetail] = useState({});
@@ -62,6 +60,18 @@ function SelectSeats() {
       setPaymentDetail(data);
       setPaymentSuccessfull(true);
     }
+  };
+
+  const handlePostPayment = () => {
+    setconfirmationModal(false);
+    const tempOccupiedSeats = [...occupiedSeats];
+    selectSeats.forEach((seat) => {
+      tempOccupiedSeats.push(seat);
+    });
+    setOccupiedSeats(tempOccupiedSeats);
+    setSelectSeats([]);
+
+    setPaymentSuccessfull(false);
   };
   useEffect(() => {
     fetchMoviesDetails(movieId);
@@ -110,6 +120,7 @@ function SelectSeats() {
           createBooking={createBooking}
           setconfirmationModal={setconfirmationModal}
           selectSeats={selectSeats}
+          occupiedSeats={occupiedSeats}
           setSelectSeats={setSelectSeats}
         />
         <div>
@@ -117,12 +128,12 @@ function SelectSeats() {
             confirmationModal={confirmationModal}
             setconfirmationModal={setconfirmationModal}
             selectSeats={selectSeats}
-            // handleConfirmTransaction={handleConfirmTransaction}
             movieName={movieName}
             handleConfirmPayment={handleConfirmPayment}
             theatreName={theatreName}
             TICKET_PRICE={TICKET_PRICE}
             paymentSuccessfull={paymentSuccessfull}
+            handlePostPayment={handlePostPayment}
             setPaymentSuccessfull={setPaymentSuccessfull}
           />
         </div>

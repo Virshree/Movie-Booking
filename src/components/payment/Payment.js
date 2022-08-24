@@ -14,6 +14,7 @@ function Payment(props) {
     handleConfirmPayment,
     paymentSuccessfull,
     setPaymentSuccessfull,
+    handlePostPayment,
   } = props;
 
   const clearState = () => {
@@ -73,22 +74,25 @@ function Payment(props) {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            {paymentSuccessfull ? (
-              <>
-                <Button
-                  className="btn btn-secondary m-2"
-                  onClick={() => setconfirmationModal(false)}
-                >
-                  Close
-                </Button>
-              </>
-            ) : (
+            {!paymentSuccessfull ? (
               <>
                 <Button
                   className="btn btn-danger m-2"
                   onClick={() => handleConfirmPayment()}
                 >
                   Confirm
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="btn btn-secondary m-2"
+                  onClick={() => {
+                    setconfirmationModal(false);
+                    handlePostPayment();
+                  }}
+                >
+                  Close
                 </Button>
               </>
             )}

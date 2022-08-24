@@ -33,12 +33,15 @@ function Admin() {
 
   const [theatreList, setTheatreList] = useState([]);
   const [tempTheatreDetail, setTempTheatreDetail] = useState({});
+
   const [updateTheatreModal, setUpdateTheatreModal] = useState(false);
   const [addTheaterModal, setAddTheatreModal] = useState(false);
+
   const [errorMessage, seterrorMessage] = useState("");
 
   const [movieList, setMovieList] = useState([]);
   const [tempMovieDetail, setTempMovieDetail] = useState({});
+
   const [updateMovieModal, setUpdateMovieModal] = useState(false);
   const [addMovieModal, setAddMovieModal] = useState(false);
 

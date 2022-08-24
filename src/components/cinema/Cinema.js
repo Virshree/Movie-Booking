@@ -1,5 +1,5 @@
-import { Modal } from "react-bootstrap";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { TICKET_PRICE } from "../../constants/seating";
 import {
   getSeatNumber,
@@ -9,8 +9,10 @@ import Seat from "../seat/Seat";
 import SelectSeats from "../selectSeatsMessage/SelectSeats";
 import "./cinema.css";
 function Cinema(props) {
-  const { createBooking, selectSeats, setSelectSeats } = props;
-  const [cinemaState, setCinemaState] = useState(getTheatre2DRepresentation());
+  const { createBooking, selectSeats, setSelectSeats, occupiedSeats } = props;
+  const [cinemaState, setCinemaState] = useState(
+    getTheatre2DRepresentation(selectSeats, occupiedSeats)
+  );
 
   const handleSelectSeats = (rowIndex, colIndex) => {
     const currentStatus = cinemaState[rowIndex][colIndex];
@@ -35,9 +37,15 @@ function Cinema(props) {
     setCinemaState(tempStatus);
     setSelectSeats(tempSelectSeats);
   };
+
   const handleProceedtoPayment = () => {
     createBooking();
   };
+
+  useEffect(() => {
+    const newSeat = getTheatre2DRepresentation();
+    setCinemaState(newSeat);
+  }, [selectSeats, occupiedSeats]);
   return (
     <>
       <div className="m-2 p-2 ">
