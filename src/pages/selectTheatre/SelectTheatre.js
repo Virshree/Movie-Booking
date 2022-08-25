@@ -92,13 +92,14 @@ function SelectTheatre() {
                 to={`/select-seats/${movieId}/${_id}`}
                 style={{ textDecoration: "none" }}
               >
-                <div className="row p-2 ">
-                  <div className="col-md-4 ">{name}</div>
-
-                  <span className="text-danger col-md-4 ">
-                    <i class="bi bi-phone-fill"></i>m-Ticket
+                <div className="row p-2 m-2">
+                  <div className="col-md-4 p-2 ">{name}</div>
+                  <br />
+                  <span className="text-danger col-md-4 p-2">
+                    <i class="bi bi-phone-fill "></i>m-Ticket
                   </span>
-                  <span className="text-success col-md-4">
+                  <br />
+                  <span className="text-success col-md-4 p-2">
                     <i class="bi bi-cup-straw"></i>
                     Food & Beverages
                   </span>

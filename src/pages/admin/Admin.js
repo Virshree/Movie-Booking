@@ -21,7 +21,7 @@ import {
 } from "../../api/movie";
 import { Button, Modal } from "react-bootstrap";
 import { cities } from "../../utils/Cities";
-import { getBookings } from "../../api/booking";
+import { createNewBookings, getBookings } from "../../api/booking";
 import { getAllUsers } from "../../api/user";
 import { ExportCsv, ExportPdf } from "@material-table/exporters";
 
@@ -182,14 +182,15 @@ function Admin() {
   };
 
   /**Booking Records logic start */
-  // const refreshhBooking = async () => {
-  //   const result = await getBookings();
-  //   console.log(result);
-  //   //setBookingList(result.data);
-  //   counterInfo.bookings = result.data.length;
-  //   //console.log(counterInfo);
-  //   setCounterInfo(counterInfo);
-  // };
+  const refreshhBooking = async () => {
+    const result = await getBookings();
+    //const result = await createNewBookings();
+    console.log(result);
+    setBookingList(result.data);
+    counterInfo.bookings = result.data.length;
+    //console.log(counterInfo);
+    setCounterInfo(counterInfo);
+  };
 
   /**User Records logic start */
 
@@ -204,7 +205,7 @@ function Admin() {
   useEffect(() => {
     refreshTheatres();
     refereshMovies();
-    // refreshhBooking();
+    refreshhBooking();
     refreshUsers();
   }, []);
   return (
@@ -646,24 +647,17 @@ function Admin() {
           data={bookinglist}
           columns={[
             {
-              title: "UserId",
-              field: "userId",
+              title: "Booking Id",
+              field: "bookingId",
             },
             {
               title: "Created At",
               field: "createdAt",
             },
-            {
-              title: "No. of Seats",
-              field: "noOfSeats",
-            },
-            {
-              title: "Timing",
-              field: "timing",
-            },
+
             {
               title: "TotalCost",
-              field: "totalCost",
+              field: "amount",
             },
             {
               title: "Status",

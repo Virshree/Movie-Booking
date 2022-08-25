@@ -43,8 +43,8 @@ function Cinema(props) {
   };
 
   useEffect(() => {
-    const newSeat = getTheatre2DRepresentation();
-    setCinemaState(newSeat);
+     getTheatre2DRepresentation();
+    
   }, [selectSeats, occupiedSeats]);
   return (
     <>
