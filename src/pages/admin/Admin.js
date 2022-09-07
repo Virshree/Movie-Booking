@@ -617,7 +617,7 @@ function Admin() {
             <select
               className="form-select"
               id="releaseStatus"
-              onChange={updateTempMovieDetails}
+              // onChange={updateTempMovieDetails}
               required
               value={tempMovieDetail.releaseStatus}
             >

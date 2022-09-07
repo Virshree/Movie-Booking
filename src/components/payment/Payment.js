@@ -87,10 +87,10 @@ function Payment(props) {
               <>
                 <Button
                   className="btn btn-secondary m-2"
-                  onClick={() => {
-                    setconfirmationModal(false);
-                    handlePostPayment();
-                  }}
+                  onClick={() =>
+                    // setconfirmationModal(false);
+                    handlePostPayment()
+                  }
                 >
                   Close
                 </Button>

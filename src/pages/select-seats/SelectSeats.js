@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { DEFAULT_BREAKPOINTS } from "react-bootstrap/esm/ThemeProvider";
-
 import { useParams } from "react-router-dom";
 import { createNewBookings } from "../../api/booking";
 import { getMovieById } from "../../api/movie";
@@ -68,6 +66,7 @@ function SelectSeats() {
     selectSeats.forEach((seat) => {
       tempOccupiedSeats.push(seat);
     });
+    console.log(tempOccupiedSeats);
     setOccupiedSeats(tempOccupiedSeats);
     setSelectSeats([]);
 
